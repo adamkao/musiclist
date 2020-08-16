@@ -22,6 +22,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const index = require('./routes/index');
 const api = require('./routes/api/index');
 const users = require('./routes/api/users');
+const authentication = require('./routes/api/authentication');
 
 const app = express();
 // Connect Mongoose
@@ -43,20 +44,23 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Webpack Server
-const webpackCompiler = webpack(webpackConfig);
-app.use(webpackDevMiddleware(webpackCompiler, {
-  publicPath: webpackConfig.output.publicPath,
-  stats: {
-    colors: true,
-    chunks: true,
-    'errors-only': true,
-  },
-}));
-app.use(webpackHotMiddleware(webpackCompiler, {
-  log: console.log,
-}));
+if (process.env.NODE_ENV !== 'production') {
+  const webpackCompiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(webpackCompiler, {
+    publicPath: webpackConfig.output.publicPath,
+    stats: {
+      colors: true,
+      chunks: true,
+      'errors-only': true,
+    },
+  }));
+  app.use(webpackHotMiddleware(webpackCompiler, {
+    log: console.log,
+  }));
+}
 app.use('/api', api);
 app.use('/api/users', users);
+app.use('/api/authentication', authentication);
 app.use('/*', index);
 
 // Configure Passport
