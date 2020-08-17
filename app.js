@@ -1,24 +1,24 @@
-const express = require('express');
-const path = require('path');
-
-const favicon = require('serve-favicon'); //eslint-disable-line
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
+const appConfig = require('/config.js');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const express = require('express');
 const expressSession = require('express-session')({
-  secret: 'some random string goes here',
+  secret: appConfig.expressSession.secret,
   resave: false,
   saveUninitialized: false,
 });
+const favicon = require('serve-favicon'); //eslint-disable-line
+const LocalStrategy = require('passport-local').Strategy;
+const logger = require('morgan');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const path = require('path');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const User = require('./models/user');
-const LocalStrategy = require('passport-local').Strategy;
 
+const User = require('./models/user');
 const index = require('./routes/index');
 const api = require('./routes/api/index');
 const users = require('./routes/api/users');

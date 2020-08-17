@@ -8,6 +8,7 @@ const User = new Schema({
   username: String,
   firstName: String,
   lastName: String,
+  passworodReset: { type: String, selecti: false },
   email: String,
 });
 
