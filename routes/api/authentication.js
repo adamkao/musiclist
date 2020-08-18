@@ -83,6 +83,42 @@ router.post('/register', async (req, res) => {
   }
 });
 
+
+// POST to savepassword
+router.post('/savepassword', async (req, res) => {
+  let result;
+  try {
+    // look up user in the DB based on reset hash
+    const query = User.findOne({ passwordReset: req.body.hash });
+    const foundUser = await query.exec();
+
+    // if the user exists save their new password
+    if (foundUser) {
+      // use passport's built-in password set method
+      foundUser.setPassword(req.body.password, (err) => {
+        if (err) {
+          result = res.send(JSON.stringify({ error: 'Password could not be saved. Please try again' }));
+        } else {
+          // once the password's set, save the user object
+          foundUser.save((error) => {
+            if (error) {
+              result = res.send(JSON.stringify({ error: '(2)Password could not be saved. Please try again' }));
+            } else {
+              // Send a success message
+              result = res.send(JSON.stringify({ success: true }));
+            }
+          });
+        }
+      });
+    } else {
+      result = res.send(JSON.stringify({ error: 'Reset hash not found in database.' }));
+    }
+  } catch (err) {
+    result = res.send(JSON.stringify({ error: 'There was an error connecting to the database.' }));
+  }
+  return result;
+});
+
 // POST to saveresethash
 router.post('/saveresethash', async (req, res) => {
   let result;
@@ -105,11 +141,11 @@ router.post('/saveresethash', async (req, res) => {
 
       // Put together the email
       const emailData = {
-        from: `Adam <postmaster@{appConfig.mailgun.domain}>`,
+        from: `Adam <postmaster@${appConfig.mailgun.domain}>`,
         to: foundUser.email,
-        subject: 'Reset Your Pasword',
-        text: `A password reset has been requested for the MusicList account connected to this email address. If you made this request, please click the following link: https://musiclist.com/account/change-password/${foundUser.passwordReset} ... if you didn't make this request, feel free to ignore it!`,
-        html: `<p>A password reset has been requested for the MusicList account connected to this email address. If you made this request, please click the following link: <a href="https://musiclist.com/account/change-password/${foundUser.passwordReset}&quot; target="_blank">https://musiclist.com/account/change-password/${foundUser.passwordReset}</a>.</p><p>If you didn't make this request, feel free to ignore it!</p>`,
+        subject: 'Reset Your Password',
+        text: `A password reset has been requested for the account connected to this email address. If you made this request, please click the following link: localhost:3000/account/change-password/${foundUser.passwordReset} ... if you didn't make this request, feel free to ignore it!`,
+        html: `<p>A password reset has been requested for the account connected to this email address. If you made this request, please click the following link: <a href="localhost:3000/account/change-password/${foundUser.passwordReset}">localhost:3000/account/change-password/${foundUser.passwordReset}</a>.</p><p>If you didn't make this request, feel free to ignore it!</p>`,
       };
 
       // Send it
@@ -129,4 +165,3 @@ router.post('/saveresethash', async (req, res) => {
 });
 
 module.exports = router;
-
