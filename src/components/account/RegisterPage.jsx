@@ -1,5 +1,5 @@
 import React from 'react';
-import {AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Button, Label } from 'reactstrap';
 
 export default class ProfilePage extends React.Component {
@@ -8,7 +8,6 @@ export default class ProfilePage extends React.Component {
 
     // bound functions
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
 
     // component state
@@ -24,14 +23,6 @@ export default class ProfilePage extends React.Component {
   // Handle input changes
   handleInputChange(e) {
     this.setState({ [e.currentTarget.id]: e.target.value });
-  }
-
-  // catch enter clicks
-  handleKeyPress(target) {
-    if (target.charCode === 13) {
-      target.preventDefault();
-      this.compileFormData();
-    }
   }
 
   // Handle submission once all form data is valid

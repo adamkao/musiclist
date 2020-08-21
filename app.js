@@ -1,18 +1,17 @@
-const appConfig = require('./config.js'); 
+const appConfig = require('./config.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const express = require('express');
-const expressSession = require('express-session')({
-  secret: appConfig.expressSession.secret,
-  resave: false,
-  saveUninitialized: false,
-});
+const expressSession = require('express-session');
 const favicon = require('serve-favicon'); //eslint-disable-line
+const helmet = require('helmet');
 const LocalStrategy = require('passport-local').Strategy;
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const path = require('path');
+const RateLimit = require('express-rate-limit');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -42,7 +41,21 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(expressSession);
+app.use(compression());
+// Express Session
+const sessionValues = {
+  cookie: {},
+  name: 'sessionId',
+  resave: false,
+  saveUnitialized: true,
+  secret: appConfig.expressSession.secret,
+};
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1);
+  sessionValues.cookie.secure = true;
+}
+app.use(expressSession(sessionValues));
+app.use(helmet());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -64,6 +77,13 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use('/api', api);
+// configure rate limiter
+const apiLimiter = new RateLimit({
+  windowMS: 1 * 60 * 1000, // 1 minute
+  max: 50,
+  delayMs: 0, // disabled
+});
+app.use('/api/', apiLimiter);
 app.use('/api/albums', albums);
 app.use('/api/artists', artists);
 app.use('/api/authentication', authentication);
