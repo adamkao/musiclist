@@ -8,5 +8,4 @@ exports.crypto = parsed.crypto;
 exports.discogs = parsed.discogs;
 exports.expressSession = parsed.expressSession;
 exports.mailgun = parsed.mailgun;
-exports.mongodb = parsed.mongodb;
 exports.port = parsed.port;

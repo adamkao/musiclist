@@ -29,7 +29,7 @@ const users = require('./routes/api/users');
 
 const app = express();
 // Connect Mongoose
-mongoose.connect(`mongodb://${appConfig.mongodb.user}:${appConfig.mongodb.password}@localhost/musiclist?authSource=admin`, { useMongoClient: true });
+mongoose.connect('mongodb://localhost/musiclist');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -52,7 +52,7 @@ const sessionValues = {
 };
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
-//  sessionValues.cookie.secure = true;
+  sessionValues.cookie.secure = true;
 }
 app.use(expressSession(sessionValues));
 app.use(helmet());

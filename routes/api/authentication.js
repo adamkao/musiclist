@@ -51,7 +51,6 @@ router.post('/login', async (req, res) => {
 
 // POST to /register
 router.post('/register', async (req, res) => {
-  console.log('POST to /register');
   // First, check and make sure the email doesn't already exist
   const query = User.findOne({ email: req.body.email });
   const foundUser = await query.exec();

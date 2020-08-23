@@ -172,7 +172,6 @@ router.post('/populate', (req, res, next) => {
 
 // POST to /search
 router.post('/search', async (req, res) => {
-  console.log('POST to /search');
   // Contact Discogs API
   await discogsDB.search(req.body, (err, data) => {
     if (err) {
