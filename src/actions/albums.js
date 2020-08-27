@@ -227,7 +227,7 @@ export function searchAlbums(searchText) {
       return null;
     })
     .then((json) => {
-      if (json.results) {
+      if (json) {
         return dispatch(albumSearchSuccess(json));
       }
       return dispatch(albumSearchFailure(new Error(json.error)));

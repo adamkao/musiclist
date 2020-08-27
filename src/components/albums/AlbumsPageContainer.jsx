@@ -31,6 +31,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   dispatch,
 }, dispatch);
 
-const mapStateToProps = state => ({ albums: state.albums, user: state.user });
+const mapStateToProps = state => {
+  return ({ albums: state.albums, user: state.user });
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AlbumsPageContainer);

@@ -56,8 +56,11 @@ export default class AlbumsPage extends React.Component {
 
   listAlbums(albums) {
     const { user } = this.props;
+    alert('listAlbums');
+    alert(JSON.stringify(albums[0]));
     return albums.map(album =>
-      (
+      (<p>{album.snippet.title}</p>
+        /*
         <tr key={album.id}>
           <td><img src={album.thumb} alt="album thumbnail" width="80" height="80" /></td>
           <td>{formatTitle(album.title, 1)}</td>
@@ -72,6 +75,7 @@ export default class AlbumsPage extends React.Component {
             }
           </td>
         </tr>
+        */
       ));
   }
 

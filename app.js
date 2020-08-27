@@ -24,6 +24,7 @@ const api = require('./routes/api/index');
 const albums = require('./routes/api/albums');
 const artists = require('./routes/api/artists');
 const authentication = require('./routes/api/authentication');
+const playlists = require('./routes/api/playlists');
 const index = require('./routes/index');
 const users = require('./routes/api/users');
 
@@ -87,6 +88,7 @@ app.use('/api/', apiLimiter);
 app.use('/api/albums', albums);
 app.use('/api/artists', artists);
 app.use('/api/authentication', authentication);
+app.use('/api/playlists', playlists);
 app.use('/api/users', users);
 app.use('/*', index);
 
