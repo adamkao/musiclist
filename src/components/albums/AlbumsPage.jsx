@@ -1,6 +1,6 @@
 import React from 'react';
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Button, Label, ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Label, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 
 // helpers
 const formatTitle = (discogsTitle, value) => discogsTitle.split(' - ')[value];
@@ -35,26 +35,37 @@ export default class AlbumsPage extends React.Component {
     searchAlbumsFunction(formData, this.searchText);
   }
 
-  alertClicked(title) {
-    alert(title);
+  alertClicked(title, side) {
+    alert(title + ' on the ' + side);
   }
 
   createTable(albums) {
     return (
-      <ListGroup as="ul">
-        {this.listAlbums(albums)}
-      </ListGroup>
+      <Container>
+        <Row>
+          <Col lg="6">
+            <ListGroup as="ul">
+              {this.listAlbums(albums, 'lf')}
+            </ListGroup>
+          </Col>
+          <Col lg="6">
+            <ListGroup as="ul">
+              {this.listAlbums(albums, 'rt')}
+            </ListGroup>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 
-  listAlbums(albums) {
+  listAlbums(albums, side) {
     const { user } = this.props;
     return albums.map(album => (
       <ListGroupItem
         tag="button"
         as="li"
         action
-        onClick={() => this.alertClicked(album.snippet.title)}
+        onClick={() => this.alertClicked(album.snippet.title, side)}
       >
         <img src={album.snippet.thumbnails.default.url} alt="thumbnail" height="20" />
         &ensp; {album.snippet.title}
