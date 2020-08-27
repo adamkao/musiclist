@@ -102,22 +102,24 @@ function storeToken(token) {
  */
 function getChannel(auth) {
   var service = google.youtube('v3');
-  service.playlists.list({
+  service.channels.list({
     auth: auth,
-    part: 'id,snippet',
-    mine: true,
+    part: 'snippet,contentDetails,statistics',
+    forUsername: 'GoogleDevelopers'
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
       return;
     }
-    var items = response.data.items;
-    if (items.length === 0) {
+    var channels = response.data.items;
+    if (channels.length == 0) {
       console.log('No channel found.');
     } else {
-      console.log('This ID is %s. title is \'%s\'.',
-                  items[0].id,
-                  items[0].snippet.title);
+      console.log('This channel\'s ID is %s. Its title is \'%s\', and ' +
+                  'it has %s views.',
+                  channels[0].id,
+                  channels[0].snippet.title,
+                  channels[0].statistics.viewCount);
     }
   });
 }

@@ -189,7 +189,7 @@ var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback, res) {
+function authorize(credentials, callback, res, list, pageToken) {
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
@@ -201,7 +201,7 @@ function authorize(credentials, callback, res) {
       getNewToken(oauth2Client, callback);
     } else {
       oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client, res);
+      callback(oauth2Client, res, list, pageToken);
     }
   });
 }
@@ -217,7 +217,7 @@ function authorize(credentials, callback, res) {
 function getNewToken(oauth2Client, callback) {
   var authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: SCOPES
+    scope: SCOPES,
   });
   console.log('Authorize this app by visiting this url: ', authUrl);
   var rl = readline.createInterface({
@@ -262,42 +262,29 @@ function storeToken(token) {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function getChannel(auth, res) {
-  var service = google.youtube('v3');
+function getPlaylists(auth, res, list, pageToken) {
+  const service = google.youtube('v3');
   service.playlists.list({
     auth: auth,
     part: 'id,snippet',
+    maxResults: 50,
     mine: true,
+    pageToken: pageToken,
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
       return;
     }
-    var items = response.data.items;
-    if (items.length === 0) {
-      console.log('No channel found.');
+    const newList = list.concat(response.data.items);
+    const nextPageToken = response.data.nextPageToken;
+    if (nextPageToken) {
+      console.log('nextPageToken is %s', nextPageToken);
+      getPlaylists(auth, res, newList, nextPageToken);
     } else {
-      console.log('This ID is %s. title is \'%s\'.',
-                  items[0].id,
-                  items[0].snippet.title);
-      console.log(JSON.stringify(items));
-      res.json(items);
+      res.json(newList.sort((a, b) => ((a.snippet.title < b.snippet.title) ? -1 : 1)));
     }
   });
 }
-/*
-// POST to /search
-router.post('/search', async (req, res) => {
-  // Contact Discogs API
-  await discogsDB.search(req.body, (err, data) => {
-    if (err) {
-      const error = new Error(err);
-      return res.json(error);
-    }
-    return res.json(data);
-  });
-});
-*/
 
 // POST to /search
 router.post('/search', async (req, res) => {
@@ -307,7 +294,7 @@ router.post('/search', async (req, res) => {
       return;
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
-    authorize(JSON.parse(content), getChannel, res);
+    authorize(JSON.parse(content), getPlaylists, res, [], null);
   });
 });
 

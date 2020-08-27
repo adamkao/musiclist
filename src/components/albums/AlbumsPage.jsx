@@ -1,6 +1,6 @@
 import React from 'react';
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Button, Label, Table } from 'reactstrap';
+import { Button, Label, ListGroup, ListGroupItem } from 'reactstrap';
 
 // helpers
 const formatTitle = (discogsTitle, value) => discogsTitle.split(' - ')[value];
@@ -35,48 +35,31 @@ export default class AlbumsPage extends React.Component {
     searchAlbumsFunction(formData, this.searchText);
   }
 
+  alertClicked(title) {
+    alert(title);
+  }
+
   createTable(albums) {
     return (
-      <Table striped responsive>
-        <thead>
-          <tr>
-            <th />
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Genre(s)</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          { this.listAlbums(albums) }
-        </tbody>
-      </Table>
+      <ListGroup as="ul">
+        {this.listAlbums(albums)}
+      </ListGroup>
     );
   }
 
   listAlbums(albums) {
     const { user } = this.props;
-    alert('listAlbums');
-    alert(JSON.stringify(albums[0]));
-    return albums.map(album =>
-      (<p>{album.snippet.title}</p>
-        /*
-        <tr key={album.id}>
-          <td><img src={album.thumb} alt="album thumbnail" width="80" height="80" /></td>
-          <td>{formatTitle(album.title, 1)}</td>
-          <td>{formatTitle(album.title, 0)}</td>
-          <td>{formatGenre(album.genre)}</td>
-          <td>
-            { user.albums.indexOf(album.id) < 0 ?
-              <Button color="primary" outline id={album.id} onClick={this.addAlbum}>
-                Add To My list
-              </Button> :
-              <span>Already Listed</span>
-            }
-          </td>
-        </tr>
-        */
-      ));
+    return albums.map(album => (
+      <ListGroupItem
+        tag="button"
+        as="li"
+        action
+        onClick={() => this.alertClicked(album.snippet.title)}
+      >
+        <img src={album.snippet.thumbnails.default.url} alt="thumbnail" height="20" />
+        &ensp; {album.snippet.title}
+      </ListGroupItem>
+    ));
   }
 
   // Add an album to the user's list
