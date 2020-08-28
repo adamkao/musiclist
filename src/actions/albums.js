@@ -14,6 +14,8 @@ export const albumSearchFailure = error => ({ type: 'MUSIC_ALBUM_SEARCH_FAILURE'
 export const albumSearchSuccess = json => ({ type: 'MUSIC_ALBUM_SEARCH_SUCCESS', json });
 export const albumsPopulateFailure = error => ({ type: 'MUSIC_ALBUMS_POPULATE_FAILURE', error });
 export const albumsPopulateSuccess = json => ({ type: 'MUSIC_ALBUMS_POPULATE_SUCCESS', json });
+export const albumVideosFailure = error => ({ type: 'MUSIC_VIDEOS_GET_FAILURE', error });
+export const albumVideosSuccess = json => ({ type: 'MUSIC_VIDEOS_GET_SUCCESS', json });
 
 // Add an Album
 export function addAlbum(id) {
@@ -181,7 +183,7 @@ export function populateAlbums(albums) {
       if (!json.error) {
         return dispatch(albumsPopulateSuccess(json));
       }
-      return dispatch(albumsPopulateFailure(new Error(error)));
+      return dispatch(albumsPopulateFailure(new Error(json.error)));
     })
     .catch(error => dispatch(albumsPopulateFailure(new Error(error))));
 
@@ -233,6 +235,56 @@ export function searchAlbums(searchText) {
       return dispatch(albumSearchFailure(new Error(json.error)));
     })
     .catch(error => dispatch(albumSearchFailure(new Error(error))));
+
+    // turn off spinner
+    return dispatch(decrementProgress());
+  };
+}
+
+
+// Get Videos
+export function getVideos(id) {
+  return async (dispatch) => {
+    alert('getVideos ' + id);
+    // clear the error box if it's displayed
+    dispatch(clearError());
+
+    // turn on spinner
+    dispatch(incrementProgress());
+
+    // Build packet to send to API
+    const searchQuery = {
+      videoId: id,
+    };
+
+    // Send packet to our API
+    await fetch(
+      // where to contact
+      '/api/albums/videos',
+      // what to send
+      {
+        method: 'POST',
+        body: JSON.stringify(searchQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      },
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return null;
+    })
+    .then((json) => {
+      alert(JSON.stringify(json));
+      if (json) {
+        return dispatch(albumVideosSuccess(json));
+      }
+      return dispatch(albumVideosFailure(new Error(json.error)));
+    })
+    .catch(error => dispatch(albumVideosFailure(new Error(error))));
 
     // turn off spinner
     return dispatch(decrementProgress());

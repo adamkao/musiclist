@@ -206,6 +206,23 @@ function authorize(credentials, callback, res, list, pageToken) {
   });
 }
 
+function authorizeVideos(credentials, callback, id, res, list, pageToken) {
+  var clientSecret = credentials.installed.client_secret;
+  var clientId = credentials.installed.client_id;
+  var redirectUrl = credentials.installed.redirect_uris[0];
+  var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
+
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, function(err, token) {
+    if (err) {
+      getNewToken(oauth2Client, callback);
+    } else {
+      oauth2Client.credentials = JSON.parse(token);
+      callback(oauth2Client, id, res, list, pageToken);
+    }
+  });
+}
+
 /**
  * Get and store new token after prompting for user authorization, and then
  * execute the given callback with the authorized OAuth2 client.
@@ -257,11 +274,6 @@ function storeToken(token) {
   });
 }
 
-/**
- * Lists the names and IDs of up to 10 files.
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
 function getPlaylists(auth, res, list, pageToken) {
   const service = google.youtube('v3');
   service.playlists.list({
@@ -286,6 +298,30 @@ function getPlaylists(auth, res, list, pageToken) {
   });
 }
 
+function getVideos(auth, id, res, list, pageToken) {
+  const service = google.youtube('v3');
+  service.playlistItems.list({
+    auth: auth,
+    part: 'id,snippet',
+    maxResults: 50,
+    playlistId: id,
+    pageToken: pageToken,
+  }, function(err, response) {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    }
+    const newList = list.concat(response.data.items);
+    const nextPageToken = response.data.nextPageToken;
+    if (nextPageToken) {
+      console.log('nextPageToken is %s', nextPageToken);
+      getVideos(auth, id, res, newList, nextPageToken);
+    } else {
+      res.json(newList);
+    }
+  });
+}
+
 // POST to /search
 router.post('/search', async (req, res) => {
   fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -295,6 +331,19 @@ router.post('/search', async (req, res) => {
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
     authorize(JSON.parse(content), getPlaylists, res, [], null);
+  });
+});
+
+// POST to /videos
+router.post('/videos', async (req, res) => {
+  fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+    if (err) {
+      console.log('Error loading client secret file: ' + err);
+      return;
+    }
+    console.log(JSON.stringify(req.body));
+    // Authorize a client with the loaded credentials, then call the YouTube API.
+    authorizeVideos(JSON.parse(content), getVideos, req.body.videoId, res, [], null);
   });
 });
 

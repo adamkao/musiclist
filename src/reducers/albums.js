@@ -9,6 +9,10 @@ export default function reducer(state = initialState, action) {
       const newState = initialState.slice();
       return newState;
     }
+    case 'MUSIC_VIDEOS_GET_SUCCESS': {
+      const newState = action.json.slice();
+      return newState;
+    }
     default: {
       return state;
     }

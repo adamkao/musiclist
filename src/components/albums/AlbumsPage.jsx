@@ -2,10 +2,6 @@ import React from 'react';
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Button, Label, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 
-// helpers
-const formatTitle = (discogsTitle, value) => discogsTitle.split(' - ')[value];
-const formatGenre = discogsGenre => discogsGenre.join(', ');
-
 export default class AlbumsPage extends React.Component {
   constructor(props) {
     super(props);
@@ -35,8 +31,10 @@ export default class AlbumsPage extends React.Component {
     searchAlbumsFunction(formData, this.searchText);
   }
 
-  alertClicked(title, side) {
-    alert(title + ' on the ' + side);
+  alertClicked(title, id, side) {
+    const { getVideosFunction } = this.props;
+    alert(title + ' on the ' + side + ' id ' + id);
+    getVideosFunction(id);
   }
 
   createTable(albums) {
@@ -65,10 +63,10 @@ export default class AlbumsPage extends React.Component {
         tag="button"
         as="li"
         action
-        onClick={() => this.alertClicked(album.snippet.title, side)}
+        onClick={() => this.alertClicked(album.snippet.title, album.id, side)}
       >
         <img src={album.snippet.thumbnails.default.url} alt="thumbnail" height="20" />
-        &ensp; {album.snippet.title}
+        &ensp; {album.id} &ensp; {album.snippet.title}
       </ListGroupItem>
     ));
   }
@@ -109,6 +107,7 @@ export default class AlbumsPage extends React.Component {
             </AvForm>
           </div>
         </div>
+        <p />
         <div className="row">
           <div className="col-12 col-sm-12">
             { albums && albums.length > 0 ? this.createTable(albums) : null }

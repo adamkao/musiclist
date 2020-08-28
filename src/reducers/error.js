@@ -18,6 +18,7 @@ export default function reducer(state = initialState, action) {
     case 'MUSIC_ARTIST_DELETE_FAILURE':
     case 'MUSIC_ARTIST_SEARCH_FAILURE':
     case 'MUSIC_ARTISTS_POPULATE_FAILURE':
+    case 'MUSIC_VIDEOS_GET_FAILURE':
     case 'USER_LOOKUP_FAILURE': {
       const newState = Object.assign({}, initialState);
       newState.isError = true;
