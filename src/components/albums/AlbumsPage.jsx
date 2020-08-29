@@ -17,7 +17,9 @@ export default class AlbumsPage extends React.Component {
     this.state = {
       query: '',
       lfPlaylistId: null,
+      lfPlaylistTitle: '',
       rtPlaylistId: null,
+      rtPlaylistTitle: '',
     };
   }
 
@@ -30,6 +32,10 @@ export default class AlbumsPage extends React.Component {
   handleValidSubmit() {
     const { searchAlbumsFunction } = this.props;
     const formData = this.state;
+    this.setState({ lfPlaylistId: null });
+    this.setState({ lfPlaylistTitle: '' });
+    this.setState({ rtPlaylistId: null });
+    this.setState({ rtPlaylistTitle: '' });
     searchAlbumsFunction(formData, this.searchText);
   }
 
@@ -38,23 +44,29 @@ export default class AlbumsPage extends React.Component {
     if (side === 'lf') {
       getVideosLfFunction(id);
       this.setState({ lfPlaylistId: id });
+      this.setState({ lfPlaylistTitle: title });
     }
     if (side === 'rt') {
       getVideosRtFunction(id);
       this.setState({ rtPlaylistId: id });
+      this.setState({ rtPlaylistTitle: title });
     }
   }
 
   createTable(albums, videoslf, videosrt) {
+    const lfplt = this.state.lfPlaylistTitle;
+    const rtplt = this.state.rtPlaylistTitle;
     return (
       <Container>
         <Row>
           <Col lg="6">
+            { lfplt ? <div><Button>Playlist: {lfplt}</Button><p /></div> : null }
             <ListGroup as="ul">
               {this.fillPane(albums, videoslf, 'lf')}
             </ListGroup>
           </Col>
           <Col lg="6">
+            { rtplt ? <div><Button>Playlist: {rtplt}</Button><p /></div> : null }
             <ListGroup as="ul">
               {this.fillPane(albums, videosrt, 'rt')}
             </ListGroup>
@@ -122,35 +134,13 @@ export default class AlbumsPage extends React.Component {
     return (
       <div>
         <div className="row justify-content-center">
-          <div className="col-10 col-sm-7 col-md-5 col-lg-4">
-            <AvForm onValidSubmit={this.handleValidSubmit}>
-              <AvGroup>
-                <h2><Label for="search">Search Albums</Label></h2>
-                <p>
-                  Find albums you own and add them to your MusicList.
-                  You can search by album title or artist name.
-                </p>
-                <AvInput
-                  id="search"
-                  name="search"
-                  onChange={this.handleSearchChange}
-                  onKeyPress={this.handleKeyPress}
-                  placeholder="Queens of the Stone Age"
-                  required
-                  type="text"
-                  value={this.state.searchText}
-                />
-                <AvFeedback>Required</AvFeedback>
-              </AvGroup>
-              <Button color="primary">Search Albums</Button>
-            </AvForm>
-          </div>
+          <AvForm onValidSubmit={this.handleValidSubmit}>
+            <Button color="primary">Import</Button>
+          </AvForm>
         </div>
         <p />
         <div className="row">
-          <div className="col-12 col-sm-12">
-            {this.createTable(albums, videoslf, videosrt)}
-          </div>
+          {this.createTable(albums, videoslf, videosrt)}
         </div>
       </div>
     );
