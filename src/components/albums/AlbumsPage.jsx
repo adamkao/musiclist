@@ -1,6 +1,6 @@
 import React from 'react';
-import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Button, Label, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { AvForm } from 'availity-reactstrap-validation';
+import { Button, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class AlbumsPage extends React.Component {
   constructor(props) {
@@ -9,23 +9,16 @@ export default class AlbumsPage extends React.Component {
     // bound functions
     this.addAlbum = this.addAlbum.bind(this);
     this.createTable = this.createTable.bind(this);
-    this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
     this.listAlbums = this.listAlbums.bind(this);
 
     // component state
     this.state = {
-      query: '',
       lfPlaylistId: null,
       lfPlaylistTitle: '',
       rtPlaylistId: null,
       rtPlaylistTitle: '',
     };
-  }
-
-  // update state as search value changes
-  handleSearchChange(e) {
-    this.setState({ query: e.target.value });
   }
 
   // Handle submission once all form data is valid
@@ -97,8 +90,9 @@ export default class AlbumsPage extends React.Component {
       display: 'flex',
       alignItems: 'center',
     };
-
-    return items.map(item => (
+    return items.map((item) => {
+      console.log(JSON.stringify(item.snippet));
+      return (
       <ListGroupItem
         tag="button"
         as="li"
@@ -108,7 +102,7 @@ export default class AlbumsPage extends React.Component {
         <div style={divStyle}>
           <div>
             <img
-              src={item.snippet.thumbnails.default.url}
+              src={item.snippet.thumbnails.default ? item.snippet.thumbnails.default.url : null}
               alt="thumbnail"
               height={ht}
             />
@@ -119,7 +113,8 @@ export default class AlbumsPage extends React.Component {
           </div>
         </div>
       </ListGroupItem>
-    ));
+    );
+    });
   }
 
   // Add an album to the user's list
