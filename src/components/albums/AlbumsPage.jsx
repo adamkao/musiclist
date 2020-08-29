@@ -34,28 +34,29 @@ export default class AlbumsPage extends React.Component {
   }
 
   alertClicked(title, id, side) {
-    const { getVideosFunction } = this.props;
-    getVideosFunction(id);
+    const { getVideosLfFunction, getVideosRtFunction } = this.props;
     if (side === 'lf') {
+      getVideosLfFunction(id);
       this.setState({ lfPlaylistId: id });
     }
     if (side === 'rt') {
+      getVideosRtFunction(id);
       this.setState({ rtPlaylistId: id });
     }
   }
 
-  createTable(albums, videos) {
+  createTable(albums, videoslf, videosrt) {
     return (
       <Container>
         <Row>
           <Col lg="6">
             <ListGroup as="ul">
-              {this.fillPane(albums, videos, 'lf')}
+              {this.fillPane(albums, videoslf, 'lf')}
             </ListGroup>
           </Col>
           <Col lg="6">
             <ListGroup as="ul">
-              {this.fillPane(albums, videos, 'rt')}
+              {this.fillPane(albums, videosrt, 'rt')}
             </ListGroup>
           </Col>
         </Row>
@@ -80,7 +81,6 @@ export default class AlbumsPage extends React.Component {
   }
 
   listAlbums(items, side, ht) {
-    const { user } = this.props;
     const divStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -118,7 +118,7 @@ export default class AlbumsPage extends React.Component {
   }
 
   render() {
-    const { albums, videos } = this.props;
+    const { albums, videoslf, videosrt } = this.props;
     return (
       <div>
         <div className="row justify-content-center">
@@ -149,7 +149,7 @@ export default class AlbumsPage extends React.Component {
         <p />
         <div className="row">
           <div className="col-12 col-sm-12">
-            {this.createTable(albums, videos)}
+            {this.createTable(albums, videoslf, videosrt)}
           </div>
         </div>
       </div>

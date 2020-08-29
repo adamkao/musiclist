@@ -7,7 +7,8 @@ import LatestReducer from '../reducers/latest';
 import ListReducer from '../reducers/list';
 import ProgressReducer from '../reducers/progress';
 import UserReducer from '../reducers/user';
-import VideosReducer from '../reducers/videos';
+import VideosLfReducer from '../reducers/videoslf';
+import VideosRtReducer from '../reducers/videosrt';
 
 const reducers = {
   albums: AlbumsReducer,
@@ -18,7 +19,8 @@ const reducers = {
   list: ListReducer,
   progress: ProgressReducer,
   user: UserReducer,
-  videos: VideosReducer,
+  videoslf: VideosLfReducer,
+  videosrt: VideosRtReducer,
 };
 
 export default combineReducers(reducers);

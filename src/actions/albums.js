@@ -15,7 +15,8 @@ export const albumSearchSuccess = json => ({ type: 'MUSIC_ALBUM_SEARCH_SUCCESS',
 export const albumsPopulateFailure = error => ({ type: 'MUSIC_ALBUMS_POPULATE_FAILURE', error });
 export const albumsPopulateSuccess = json => ({ type: 'MUSIC_ALBUMS_POPULATE_SUCCESS', json });
 export const albumVideosFailure = error => ({ type: 'MUSIC_VIDEOS_GET_FAILURE', error });
-export const albumVideosSuccess = json => ({ type: 'MUSIC_VIDEOS_GET_SUCCESS', json });
+export const albumVideosLfSuccess = json => ({ type: 'MUSIC_VIDEOS_LF_GET_SUCCESS', json });
+export const albumVideosRtSuccess = json => ({ type: 'MUSIC_VIDEOS_RT_GET_SUCCESS', json });
 
 // Add an Album
 export function addAlbum(id) {
@@ -242,10 +243,8 @@ export function searchAlbums(searchText) {
 }
 
 
-// Get Videos
-export function getVideos(id) {
+export function getVideosLf(id) {
   return async (dispatch) => {
-    alert('getVideos ' + id);
     // clear the error box if it's displayed
     dispatch(clearError());
 
@@ -279,7 +278,53 @@ export function getVideos(id) {
     })
     .then((json) => {
       if (json) {
-        return dispatch(albumVideosSuccess(json));
+        return dispatch(albumVideosLfSuccess(json));
+      }
+      return dispatch(albumVideosFailure(new Error(json.error)));
+    })
+    .catch(error => dispatch(albumVideosFailure(new Error(error))));
+
+    // turn off spinner
+    return dispatch(decrementProgress());
+  };
+}
+
+export function getVideosRt(id) {
+  return async (dispatch) => {
+    // clear the error box if it's displayed
+    dispatch(clearError());
+
+    // turn on spinner
+    dispatch(incrementProgress());
+
+    // Build packet to send to API
+    const searchQuery = {
+      videoId: id,
+    };
+
+    // Send packet to our API
+    await fetch(
+      // where to contact
+      '/api/albums/videos',
+      // what to send
+      {
+        method: 'POST',
+        body: JSON.stringify(searchQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      },
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return null;
+    })
+    .then((json) => {
+      if (json) {
+        return dispatch(albumVideosRtSuccess(json));
       }
       return dispatch(albumVideosFailure(new Error(json.error)));
     })

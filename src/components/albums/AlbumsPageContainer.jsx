@@ -1,7 +1,8 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addAlbum, albumSearchClear, searchAlbums, getVideos } from '../../actions/albums';
+import { addAlbum, albumSearchClear, searchAlbums, getVideosLf, getVideosRt }
+  from '../../actions/albums';
 
 import AlbumsPage from './AlbumsPage';
 
@@ -13,15 +14,26 @@ export class AlbumsPageContainer extends React.Component {
   }
 
   render() {
-    const { addAlbumFunction, albums, videos, searchAlbumsFunction, getVideosFunction, user }
-      = this.props;
+    const {
+      addAlbumFunction,
+      albums,
+      videoslf,
+      videosrt,
+      searchAlbumsFunction,
+      getVideosLfFunction,
+      getVideosRtFunction,
+      user,
+    } = this.props;
+
     return (
       <AlbumsPage
         addAlbumFunction={addAlbumFunction}
         albums={albums}
-        videos={videos}
+        videoslf={videoslf}
+        videosrt={videosrt}
         searchAlbumsFunction={searchAlbumsFunction}
-        getVideosFunction={getVideosFunction}
+        getVideosLfFunction={getVideosLfFunction}
+        getVideosRtFunction={getVideosRtFunction}
         user={user}
       />
     );
@@ -31,12 +43,17 @@ export class AlbumsPageContainer extends React.Component {
 const mapDispatchToProps = dispatch => bindActionCreators({
   addAlbumFunction: addAlbum,
   searchAlbumsFunction: searchAlbums,
-  getVideosFunction: getVideos,
+  getVideosLfFunction: getVideosLf,
+  getVideosRtFunction: getVideosRt,
   dispatch,
 }, dispatch);
 
 const mapStateToProps = state => {
-  return ({ albums: state.albums, videos: state.videos, user: state.user });
+  return ({
+    albums: state.albums,
+    videoslf: state.videoslf,
+    videosrt: state.videosrt,
+    user: state.user });
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AlbumsPageContainer);
