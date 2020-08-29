@@ -7,10 +7,11 @@ export default class AlbumsPage extends React.Component {
     super(props);
 
     // bound functions
-    this.addAlbum = this.addAlbum.bind(this);
     this.createTable = this.createTable.bind(this);
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
     this.listAlbums = this.listAlbums.bind(this);
+    this.showLfPlaylists = this.showLfPlaylists.bind(this);
+    this.showRtPlaylists = this.showRtPlaylists.bind(this);
 
     // component state
     this.state = {
@@ -25,9 +26,9 @@ export default class AlbumsPage extends React.Component {
   handleValidSubmit() {
     const { searchAlbumsFunction } = this.props;
     const formData = this.state;
-    this.setState({ lfPlaylistId: null });
+    this.setState({ lfPlaylistId: '' });
     this.setState({ lfPlaylistTitle: '' });
-    this.setState({ rtPlaylistId: null });
+    this.setState({ rtPlaylistId: '' });
     this.setState({ rtPlaylistTitle: '' });
     searchAlbumsFunction(formData, this.searchText);
   }
@@ -46,6 +47,16 @@ export default class AlbumsPage extends React.Component {
     }
   }
 
+  showLfPlaylists() {
+    this.setState({ lfPlaylistId: '' });
+    this.setState({ lfPlaylistTitle: '' });
+  }
+
+  showRtPlaylists() {
+    this.setState({ rtPlaylistId: '' });
+    this.setState({ rtPlaylistTitle: '' });
+  }
+
   createTable(albums, videoslf, videosrt) {
     const lfplt = this.state.lfPlaylistTitle;
     const rtplt = this.state.rtPlaylistTitle;
@@ -53,13 +64,23 @@ export default class AlbumsPage extends React.Component {
       <Container>
         <Row>
           <Col lg="6">
-            { lfplt ? <div><Button>Playlist: {lfplt}</Button><p /></div> : null }
+            { lfplt ?
+              <div>
+                <Button onClick={this.showLfPlaylists}>Playlist: {lfplt}</Button>
+                <p />
+              </div>
+              : null }
             <ListGroup as="ul">
               {this.fillPane(albums, videoslf, 'lf')}
             </ListGroup>
           </Col>
           <Col lg="6">
-            { rtplt ? <div><Button>Playlist: {rtplt}</Button><p /></div> : null }
+            { rtplt ?
+              <div>
+                <Button onClick={this.showRtPlaylists}>Playlist: {rtplt}</Button>
+                <p />
+              </div>
+              : null }
             <ListGroup as="ul">
               {this.fillPane(albums, videosrt, 'rt')}
             </ListGroup>
@@ -115,13 +136,6 @@ export default class AlbumsPage extends React.Component {
       </ListGroupItem>
     );
     });
-  }
-
-  // Add an album to the user's list
-  addAlbum(e) {
-    const { addAlbumFunction } = this.props;
-    // get id from button and send to the API
-    addAlbumFunction(e.target.id);
   }
 
   render() {
