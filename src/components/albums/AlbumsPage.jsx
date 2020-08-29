@@ -64,34 +64,48 @@ export default class AlbumsPage extends React.Component {
   }
 
   fillPane(albums, videos, side) {
-    alert('albums ' + JSON.stringify(albums));
-    alert('videos ' + JSON.stringify(videos));
     if (side === 'lf') {
       if (this.state.lfPlaylistId) {
-        return this.listAlbums(videos, side);
+        return this.listAlbums(videos, side, 40);
       }
-      return this.listAlbums(albums, side);
+      return this.listAlbums(albums, side, 20);
     }
     if (side === 'rt') {
       if (this.state.rtPlaylistId) {
-        return this.listAlbums(videos, side);
+        return this.listAlbums(videos, side, 40);
       }
-      return this.listAlbums(albums, side);
+      return this.listAlbums(albums, side, 20);
     }
     return side;
   }
 
-  listAlbums(albums, side) {
+  listAlbums(items, side, ht) {
     const { user } = this.props;
-    return albums.map(album => (
+    const divStyle = {
+      display: 'flex',
+      alignItems: 'center',
+    };
+
+    return items.map(item => (
       <ListGroupItem
         tag="button"
         as="li"
         action
-        onClick={() => this.alertClicked(album.snippet.title, album.id, side)}
+        onClick={() => this.alertClicked(item.snippet.title, item.id, side)}
       >
-        <img src={album.snippet.thumbnails.default.url} alt="thumbnail" height="20" />
-        &ensp; {album.id} &ensp; {album.snippet.title}
+        <div style={divStyle}>
+          <div>
+            <img
+              src={item.snippet.thumbnails.default.url}
+              alt="thumbnail"
+              height={ht}
+            />
+          </div>
+          &ensp;
+          <div>
+            {item.snippet.title}
+          </div>
+        </div>
       </ListGroupItem>
     ));
   }
