@@ -278,7 +278,6 @@ export function getVideos(id) {
       return null;
     })
     .then((json) => {
-      alert(JSON.stringify(json));
       if (json) {
         return dispatch(albumVideosSuccess(json));
       }

@@ -50,8 +50,6 @@ export default class ArtistsPage extends React.Component {
 
   listArtists(artists) {
     const { user } = this.props;
-    alert('listArtists');
-    alert(JSON.stringify(artists[0]));
 
     return artists.map(artist =>
       (

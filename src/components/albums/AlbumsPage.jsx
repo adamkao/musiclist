@@ -16,6 +16,8 @@ export default class AlbumsPage extends React.Component {
     // component state
     this.state = {
       query: '',
+      lfPlaylistId: null,
+      rtPlaylistId: null,
     };
   }
 
@@ -33,27 +35,50 @@ export default class AlbumsPage extends React.Component {
 
   alertClicked(title, id, side) {
     const { getVideosFunction } = this.props;
-    alert(title + ' on the ' + side + ' id ' + id);
     getVideosFunction(id);
+    if (side === 'lf') {
+      this.setState({ lfPlaylistId: id });
+    }
+    if (side === 'rt') {
+      this.setState({ rtPlaylistId: id });
+    }
   }
 
-  createTable(albums) {
+  createTable(albums, videos) {
     return (
       <Container>
         <Row>
           <Col lg="6">
             <ListGroup as="ul">
-              {this.listAlbums(albums, 'lf')}
+              {this.fillPane(albums, videos, 'lf')}
             </ListGroup>
           </Col>
           <Col lg="6">
             <ListGroup as="ul">
-              {this.listAlbums(albums, 'rt')}
+              {this.fillPane(albums, videos, 'rt')}
             </ListGroup>
           </Col>
         </Row>
       </Container>
     );
+  }
+
+  fillPane(albums, videos, side) {
+    alert('albums ' + JSON.stringify(albums));
+    alert('videos ' + JSON.stringify(videos));
+    if (side === 'lf') {
+      if (this.state.lfPlaylistId) {
+        return this.listAlbums(videos, side);
+      }
+      return this.listAlbums(albums, side);
+    }
+    if (side === 'rt') {
+      if (this.state.rtPlaylistId) {
+        return this.listAlbums(videos, side);
+      }
+      return this.listAlbums(albums, side);
+    }
+    return side;
   }
 
   listAlbums(albums, side) {
@@ -79,7 +104,7 @@ export default class AlbumsPage extends React.Component {
   }
 
   render() {
-    const { albums } = this.props;
+    const { albums, videos } = this.props;
     return (
       <div>
         <div className="row justify-content-center">
@@ -110,7 +135,7 @@ export default class AlbumsPage extends React.Component {
         <p />
         <div className="row">
           <div className="col-12 col-sm-12">
-            { albums && albums.length > 0 ? this.createTable(albums) : null }
+            {this.createTable(albums, videos)}
           </div>
         </div>
       </div>
