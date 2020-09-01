@@ -5,7 +5,6 @@ import AlbumsPage from './albums/AlbumsPageContainer';
 import ArtistsPage from './artists/ArtistsPageContainer';
 import ChangePasswordPage from './account/ChangePasswordPageContainer';
 import ErrorBox from './shared/ErrorBoxContainer';
-import HeaderContainer from './shared/HeaderContainer';
 import HomePage from './home/HomePageContainer';
 import ListPage from './list/ListPageContainer';
 import LoginPage from './account/LoginPageContainer';
@@ -15,12 +14,11 @@ import RegistrationSuccessPage from './account/RegistrationSuccessPageContainer'
 import ResetPasswordPage from './account/ResetPasswordPageContainer';
 
 export default function Template(props) {
-  const { authentication, progress } = props;
+  const { progress } = props;
   return (
     <Router>
       <div className="wrapper">
-        <HeaderContainer authentication={authentication} />
-        <section className="page-content container-fluid">
+        <section>
           <ErrorBox />
           <Route exact path="/" component={HomePage} />
           <Route path="/account/change-password/:hash" component={ChangePasswordPage} />

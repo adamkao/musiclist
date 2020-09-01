@@ -2,6 +2,55 @@ header {
   margin-bottom: 1rem;
 }
 
+html, body {
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.playlist-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
+}
+
+.playlist-header {
+  flex-shrink: 0;
+}
+
+.playlist-fill {
+  flex-shrink: 1;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.playlist-container {
+  height: 100%;
+}
+
+.playlist-row {
+  height: 100%;
+}
+
+.playlist-pane {
+  flex-direction: column;
+  height: calc(100vh - 200px);
+}
+
+.playlist-pane-header {
+  flex-shrink: 0;
+}
+
+.playlist-list {
+  flex-shrink: 1;
+  min-height: 0;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.playlist-item {
+ }
+
 .form-control::-webkit-input-placeholder { color: #EEE; }
 .form-control::-moz-placeholder { color: #EEE; }
 .form-control:-ms-input-placeholder { color: #EEE; }

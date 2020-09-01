@@ -1,5 +1,4 @@
 import React from 'react';
-import { AvForm } from 'availity-reactstrap-validation';
 import { Button, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class AlbumsPage extends React.Component {
@@ -8,7 +7,7 @@ export default class AlbumsPage extends React.Component {
 
     // bound functions
     this.createTable = this.createTable.bind(this);
-    this.handleValidSubmit = this.handleValidSubmit.bind(this);
+    this.import = this.import.bind(this);
     this.listAlbums = this.listAlbums.bind(this);
     this.showLfPlaylists = this.showLfPlaylists.bind(this);
     this.showRtPlaylists = this.showRtPlaylists.bind(this);
@@ -22,15 +21,18 @@ export default class AlbumsPage extends React.Component {
     };
   }
 
-  // Handle submission once all form data is valid
-  handleValidSubmit() {
+  import() {
     const { searchAlbumsFunction } = this.props;
     const formData = this.state;
-    this.setState({ lfPlaylistId: '' });
+    this.setState({ lfPlaylistId: null });
     this.setState({ lfPlaylistTitle: '' });
-    this.setState({ rtPlaylistId: '' });
+    this.setState({ rtPlaylistId: null });
     this.setState({ rtPlaylistTitle: '' });
     searchAlbumsFunction(formData, this.searchText);
+  }
+
+  authGoogle() {
+    window.open("http://localhost:8888/authenticate");
   }
 
   alertClicked(title, id, side) {
@@ -48,40 +50,37 @@ export default class AlbumsPage extends React.Component {
   }
 
   showLfPlaylists() {
-    this.setState({ lfPlaylistId: '' });
+    this.setState({ lfPlaylistId: null });
     this.setState({ lfPlaylistTitle: '' });
   }
 
   showRtPlaylists() {
-    this.setState({ rtPlaylistId: '' });
+    this.setState({ rtPlaylistId: null });
     this.setState({ rtPlaylistTitle: '' });
   }
 
   createTable(albums, videoslf, videosrt) {
     const lfplt = this.state.lfPlaylistTitle;
     const rtplt = this.state.rtPlaylistTitle;
+
     return (
-      <Container>
-        <Row>
-          <Col lg="6">
-            { lfplt ?
-              <div>
-                <Button onClick={this.showLfPlaylists}>Playlist: {lfplt}</Button>
-                <p />
-              </div>
-              : null }
-            <ListGroup as="ul">
+      <Container className="playlist-container">
+        <Row className="playlist-row">
+          <Col className="playlist-pane" lg="6"> { lfplt ?
+            <div className="playlist-pane-header">
+              <Button onClick={this.showLfPlaylists}>Playlist: {lfplt}</Button>
+              <p />
+            </div> : null }
+            <ListGroup className="playlist-list">
               {this.fillPane(albums, videoslf, 'lf')}
             </ListGroup>
           </Col>
-          <Col lg="6">
-            { rtplt ?
-              <div>
-                <Button onClick={this.showRtPlaylists}>Playlist: {rtplt}</Button>
-                <p />
-              </div>
-              : null }
-            <ListGroup as="ul">
+          <Col className="playlist-pane" lg="6"> { rtplt ?
+            <div className="playlist-pane-header">
+              <Button onClick={this.showRtPlaylists}>Playlist: {rtplt}</Button>
+              <p />
+            </div> : null }
+            <ListGroup className="playlist-list">
               {this.fillPane(albums, videosrt, 'rt')}
             </ListGroup>
           </Col>
@@ -111,12 +110,10 @@ export default class AlbumsPage extends React.Component {
       display: 'flex',
       alignItems: 'center',
     };
-    return items.map((item) => {
-      console.log(JSON.stringify(item.snippet));
-      return (
+    return items.map(item => (
       <ListGroupItem
+        className="playlist-item"
         tag="button"
-        as="li"
         action
         onClick={() => this.alertClicked(item.snippet.title, item.id, side)}
       >
@@ -134,21 +131,20 @@ export default class AlbumsPage extends React.Component {
           </div>
         </div>
       </ListGroupItem>
-    );
-    });
+    ));
   }
 
   render() {
     const { albums, videoslf, videosrt } = this.props;
+
     return (
-      <div>
-        <div className="row justify-content-center">
-          <AvForm onValidSubmit={this.handleValidSubmit}>
-            <Button color="primary">Import</Button>
-          </AvForm>
+      <div className="playlist-page">
+        <div>
+          <Button className="playlist-header" color="primary" onClick={this.import}>Import</Button>
+          <Button color="primary" onClick={this.authGoogle}>authorize</Button>
         </div>
         <p />
-        <div className="row">
+        <div className="playlist-fill">
           {this.createTable(albums, videoslf, videosrt)}
         </div>
       </div>

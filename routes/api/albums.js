@@ -1,5 +1,6 @@
 const Album = require('../../models/album.js');
 const Artist = require('../../models/artist.js');
+const Playlist = require('../../models/playlist.js');
 const appConfig = require('../../config.js');
 const Discogs = require('disconnect').Client;
 const express = require('express');
@@ -26,6 +27,22 @@ const saveAlbum = async (albumInfo) => {
     const albumInfoModified = Object.assign({ discogsId: albumInfo.id }, albumInfo);
     const newAlbum = new Album(albumInfoModified);
     await newAlbum.save((error) => {
+      if (error) { errors = true; }
+    });
+  }
+  if (errors) {
+    return false;
+  }
+  return true;
+};
+
+const savePlaylist = async (playlistInfo) => {
+  let errors = false;
+  const playlistQuery = await Playlist.findOne({ youtubeId: playlistInfo.id });
+  if (!playlistQuery) {
+    const playlistInfoModified = Object.assign({ youtubeId: playlistInfo.id }, playlistInfo);
+    const newPlaylist = new Playlist(playlistInfoModified);
+    await newPlaylist.save((error) => {
       if (error) { errors = true; }
     });
   }

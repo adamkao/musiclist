@@ -29,8 +29,16 @@ router.get('/logout', (req, res) => {
   return res.send(JSON.stringify(req.user));
 });
 
+// GET to /login
+router.get('/login2', async (req, res) => {
+  console.log('get login' + req);
+  return res.send(JSON.stringify({ error: 'Not implemented' }));
+});
+
 // POST to /login
 router.post('/login', async (req, res) => {
+  console.log('post login' + JSON.stringify(req));
+
   // look up the user by their email
   const query = User.findOne({ email: req.body.email });
   const foundUser = await query.exec();

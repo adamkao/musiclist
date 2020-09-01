@@ -6,10 +6,12 @@ const express = require('express');
 const expressSession = require('express-session');
 const favicon = require('serve-favicon'); //eslint-disable-line
 const helmet = require('helmet');
-const LocalStrategy = require('passport-local').Strategy;
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20');
+const YoutubeV3Strategy = require('passport-youtube-v3').Strategy;
 const path = require('path');
 const RateLimit = require('express-rate-limit');
 const webpack = require('webpack');
@@ -91,11 +93,6 @@ app.use('/api/authentication', authentication);
 app.use('/api/playlists', playlists);
 app.use('/api/users', users);
 app.use('/*', index);
-
-// Configure Passport
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
