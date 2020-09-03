@@ -1,17 +1,21 @@
-header {
-  margin-bottom: 1rem;
+html {
+  height: 100vh;
+  width: 100vw;
 }
 
-html, body {
-  height: 100vh;
-  margin: 0;
+body {
+  height: 100%;
+  width: 100%;
+  position: relative;
   overflow: hidden;
 }
 
 .playlist-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px);
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 .playlist-header {
@@ -33,8 +37,9 @@ html, body {
 }
 
 .playlist-pane {
+  display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
+  height: 100%;
 }
 
 .playlist-pane-header {
@@ -46,10 +51,9 @@ html, body {
   min-height: 0;
   max-height: 100%;
   overflow: auto;
+  border-style: solid;
+  border-color: blue;
 }
-
-.playlist-item {
- }
 
 .form-control::-webkit-input-placeholder { color: #EEE; }
 .form-control::-moz-placeholder { color: #EEE; }

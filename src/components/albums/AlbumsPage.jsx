@@ -64,7 +64,7 @@ export default class AlbumsPage extends React.Component {
     const rtplt = this.state.rtPlaylistTitle;
 
     return (
-      <Container className="playlist-container">
+      <div className="container-fluid playlist-container">
         <Row className="playlist-row">
           <Col className="playlist-pane" lg="6"> { lfplt ?
             <div className="playlist-pane-header">
@@ -85,7 +85,7 @@ export default class AlbumsPage extends React.Component {
             </ListGroup>
           </Col>
         </Row>
-      </Container>
+      </div>
     );
   }
 
@@ -111,12 +111,7 @@ export default class AlbumsPage extends React.Component {
       alignItems: 'center',
     };
     return items.map(item => (
-      <ListGroupItem
-        className="playlist-item"
-        tag="button"
-        action
-        onClick={() => this.alertClicked(item.snippet.title, item.id, side)}
-      >
+      <ListGroupItem tag="button" action onClick={() => this.alertClicked(item.snippet.title, item.id, side)}>
         <div style={divStyle}>
           <div>
             <img
@@ -139,8 +134,8 @@ export default class AlbumsPage extends React.Component {
 
     return (
       <div className="playlist-page">
-        <div>
-          <Button className="playlist-header" color="primary" onClick={this.import}>Import</Button>
+        <div className="playlist-header">
+          <Button color="primary" onClick={this.import}>Import</Button>
           <Button color="primary" onClick={this.authGoogle}>authorize</Button>
         </div>
         <p />
