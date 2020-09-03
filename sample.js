@@ -33,7 +33,7 @@ app.get('/authenticate', passport.authenticate('youtube'));
 app.get('/redirect', passport.authenticate('youtube', { failureRedirect: '/login' }),
 function (req, res) {
     console.log(req.user.accessToken);
-    res.redirect('http://localhost:3000/api/authentication/login2/'); // ?access_token&=' + req.user.accessToken);
+    res.redirect('http://localhost:3000/api/authentication/login2/?access_token=' + req.user.accessToken);
 });
 
 app.listen(8888);

@@ -18,8 +18,8 @@ class TemplateContainer extends React.Component {
   }
 
   checkUserSession() {
-  	const { dispatch } = this.props;
-  	dispatch(checkSession());
+    const { dispatch } = this.props;
+    dispatch(checkSession());
   }
   render() {
     const { authentication, progress } = this.props;

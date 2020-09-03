@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Button, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class AlbumsPage extends React.Component {
   constructor(props) {
@@ -8,6 +9,7 @@ export default class AlbumsPage extends React.Component {
     // bound functions
     this.createTable = this.createTable.bind(this);
     this.import = this.import.bind(this);
+    this.authGoogle = this.authGoogle.bind(this);
     this.listAlbums = this.listAlbums.bind(this);
     this.showLfPlaylists = this.showLfPlaylists.bind(this);
     this.showRtPlaylists = this.showRtPlaylists.bind(this);
@@ -32,7 +34,7 @@ export default class AlbumsPage extends React.Component {
   }
 
   authGoogle() {
-    window.open("http://localhost:8888/authenticate");
+//    const resp = window.open('http://localhost:8888/authenticate');
   }
 
   alertClicked(title, id, side) {
@@ -52,6 +54,7 @@ export default class AlbumsPage extends React.Component {
   showLfPlaylists() {
     this.setState({ lfPlaylistId: null });
     this.setState({ lfPlaylistTitle: '' });
+    alert('showLfPlaylists');
   }
 
   showRtPlaylists() {
@@ -111,7 +114,11 @@ export default class AlbumsPage extends React.Component {
       alignItems: 'center',
     };
     return items.map(item => (
-      <ListGroupItem tag="button" action onClick={() => this.alertClicked(item.snippet.title, item.id, side)}>
+      <ListGroupItem
+        tag="button"
+        action
+        onClick={() => this.alertClicked(item.snippet.title, item.id, side)}
+      >
         <div style={divStyle}>
           <div>
             <img
@@ -129,14 +136,32 @@ export default class AlbumsPage extends React.Component {
     ));
   }
 
+  renderHeader(isLoggedIn, firstName) {
+    if (isLoggedIn) {
+      return (
+        <div>Welcome, {firstName}
+          <Button color="primary" onClick={this.import}>Import</Button>
+          <Button color="primary" onClick={this.authGoogle}>authorize</Button>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <Button tag={Link} to="/account/login">Log In</Button>
+        <Button tag={Link} to="/account/register">Register</Button>
+        <Button color="primary" onClick={this.import}>Import</Button>
+        <Button color="primary" onClick={this.authGoogle}>authorize</Button>
+      </div>
+    );
+  }
   render() {
     const { albums, videoslf, videosrt } = this.props;
+    const { isLoggedIn, firstName } = this.props.authentication;
 
     return (
       <div className="playlist-page">
         <div className="playlist-header">
-          <Button color="primary" onClick={this.import}>Import</Button>
-          <Button color="primary" onClick={this.authGoogle}>authorize</Button>
+          { this.renderHeader(isLoggedIn, firstName) }
         </div>
         <p />
         <div className="playlist-fill">

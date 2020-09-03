@@ -94,6 +94,11 @@ app.use('/api/playlists', playlists);
 app.use('/api/users', users);
 app.use('/*', index);
 
+// Configure Passport
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const

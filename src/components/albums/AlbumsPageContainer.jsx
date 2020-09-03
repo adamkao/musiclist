@@ -23,6 +23,7 @@ export class AlbumsPageContainer extends React.Component {
       getVideosLfFunction,
       getVideosRtFunction,
       user,
+      authentication,
     } = this.props;
 
     return (
@@ -35,6 +36,7 @@ export class AlbumsPageContainer extends React.Component {
         getVideosLfFunction={getVideosLfFunction}
         getVideosRtFunction={getVideosRtFunction}
         user={user}
+        authentication={authentication}
       />
     );
   }
@@ -53,7 +55,9 @@ const mapStateToProps = state => {
     albums: state.albums,
     videoslf: state.videoslf,
     videosrt: state.videosrt,
-    user: state.user });
+    user: state.user,
+    authentication: state.authentication,
+  });
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AlbumsPageContainer);
