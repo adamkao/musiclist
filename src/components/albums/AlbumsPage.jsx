@@ -34,7 +34,13 @@ export default class AlbumsPage extends React.Component {
   }
 
   authGoogle() {
-//    const resp = window.open('http://localhost:8888/authenticate');
+    const { searchAlbumsFunction } = this.props;
+    const formData = this.state;
+    this.setState({ lfPlaylistId: null });
+    this.setState({ lfPlaylistTitle: '' });
+    this.setState({ rtPlaylistId: null });
+    this.setState({ rtPlaylistTitle: '' });
+    searchAlbumsFunction(formData, this.searchText);
   }
 
   alertClicked(title, id, side) {
@@ -54,7 +60,6 @@ export default class AlbumsPage extends React.Component {
   showLfPlaylists() {
     this.setState({ lfPlaylistId: null });
     this.setState({ lfPlaylistTitle: '' });
-    alert('showLfPlaylists');
   }
 
   showRtPlaylists() {

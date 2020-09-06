@@ -1,12 +1,7 @@
 const appConfig = require('../../config.js');
 const createDOMPurify = require('dompurify');
-const crypto = require('crypto');
 const express = require('express');
 const { JSDOM } = require('jsdom');
-const mailgun = require('mailgun-js')({
-  apiKey: appConfig.mailgun.apiKey,
-  domain: appConfig.mailgun.domain,
-});
 const mongoose = require('mongoose');
 const passport = require('passport');
 const User = require('../../models/user.js');
@@ -16,6 +11,7 @@ const router = express.Router();
 // configure mongoose promises
 mongoose.Promise = global.Promise;
 
+/*
 // GET to /checksession
 router.get('/checksession', (req, res) => {
   if (req.user) {
@@ -28,14 +24,34 @@ router.get('/logout', (req, res) => {
   req.logout();
   return res.send(JSON.stringify(req.user));
 });
+*/
 
-// GET to /login2
-router.get('/login2', async (req, res) => {
-  const accessToken = req.query.access_token;
-
-  console.log(`get login2 ${JSON.stringify(req.query)}`);
-  return res.send(JSON.stringify({ accessToken: accessToken }));
+router.get('/google', async (req, res) => {
+  passport.authenticate('youtube')(req, res, () => res.send('ok'));
 });
+
+router.get('/googlecb', passport.authenticate('youtube'), async (req, res) => {
+  const gid = req.user.profile.id;
+  const username = req.user.profile.displayName;
+  console.log('profile id ' + gid + ' name ' + username);
+  const query = User.findOne({ googleid: gid });
+  const foundUser = await query.exec();
+
+  if (foundUser) { return res.send(JSON.stringify({ error: 'User already exists' })); }
+
+  new User({
+    username: username,
+    googleid: gid,
+  }).save().then((newUser) => {
+    console.log('new user created: ' + newUser);
+  });
+
+  return res.send('created');
+
+//  res.redirect('http://localhost:3000/api/authentication/login2/?access_token=' + req.user.accessToken);
+});
+
+/*
 
 // POST to /login
 router.post('/login', async (req, res) => {
@@ -99,7 +115,6 @@ router.post('/register', async (req, res) => {
     });
   }
 });
-
 
 // POST to savepassword
 router.post('/savepassword', async (req, res) => {
@@ -180,5 +195,5 @@ router.post('/saveresethash', async (req, res) => {
   }
   return result;
 });
-
+*/
 module.exports = router;

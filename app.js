@@ -10,7 +10,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const GoogleStrategy = require('passport-google-oauth20');
 const YoutubeV3Strategy = require('passport-youtube-v3').Strategy;
 const path = require('path');
 const RateLimit = require('express-rate-limit');
@@ -45,6 +44,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(compression());
+
 // Express Session
 const sessionValues = {
   cookie: {},
@@ -59,8 +59,10 @@ if (app.get('env') === 'production') {
 }
 app.use(expressSession(sessionValues));
 app.use(helmet());
+/*
 app.use(passport.initialize());
 app.use(passport.session());
+*/
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Webpack Server
@@ -79,6 +81,22 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
+passport.use(new YoutubeV3Strategy(
+  {
+    clientID: appConfig.youtube.id,
+    clientSecret: appConfig.youtube.secret,
+    scope: ['https://www.googleapis.com/auth/youtube'],
+    callbackURL: '/authentication/googlecb',
+  },
+  () => {
+    console.log('// passport callback');
+  },
+));
+
+app.use(passport.initialize());
+
+app.get('/authenticate', passport.authenticate('youtube'));
+
 app.use('/api', api);
 // configure rate limiter
 const apiLimiter = new RateLimit({
@@ -95,10 +113,30 @@ app.use('/api/users', users);
 app.use('/*', index);
 
 // Configure Passport
+/*
 passport.use(new LocalStrategy(User.authenticate()));
+
+passport.use(new YoutubeV3Strategy(
+  {
+    clientID: appConfig.youtube.id,
+    clientSecret: appConfig.youtube.secret,
+    callbackURL: 'http://localhost:3000/api/albums/redirect',
+    scope: ['https://www.googleapis.com/auth/youtube'],
+  },
+  function (accessToken, refreshToken, profile, cb) {
+    console.log('YoutubeV3Strategy ' + accessToken);
+    const user = {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+    return cb(null, user);
+  },
+));
+*/
+/*
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
+*/
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const

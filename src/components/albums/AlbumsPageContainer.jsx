@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addAlbum, albumSearchClear, searchAlbums, getVideosLf, getVideosRt }
   from '../../actions/albums';
-
+import { authYouTubeUser } from '../../actions/authentication';
 import AlbumsPage from './AlbumsPage';
 
 export class AlbumsPageContainer extends React.Component {
@@ -16,6 +16,7 @@ export class AlbumsPageContainer extends React.Component {
   render() {
     const {
       addAlbumFunction,
+      authYouTubeUserFunction,
       albums,
       videoslf,
       videosrt,
@@ -29,6 +30,7 @@ export class AlbumsPageContainer extends React.Component {
     return (
       <AlbumsPage
         addAlbumFunction={addAlbumFunction}
+        authYouTubeUserFunction={authYouTubeUserFunction}
         albums={albums}
         videoslf={videoslf}
         videosrt={videosrt}
@@ -44,6 +46,7 @@ export class AlbumsPageContainer extends React.Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   addAlbumFunction: addAlbum,
+  authYouTubeUserFunction: authYouTubeUser,
   searchAlbumsFunction: searchAlbums,
   getVideosLfFunction: getVideosLf,
   getVideosRtFunction: getVideosRt,

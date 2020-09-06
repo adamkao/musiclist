@@ -3,6 +3,9 @@ import { decrementProgress, incrementProgress } from './progress';
 import { clearError } from './error';
 
 // Action Creators
+export const authYouTubeAttempt = () => ({ type: 'AUTHENTICATION_YOUTUBE_ATTEMPT' });
+export const authYouTubeFailure = error => ({ type: 'AUTHENTICATION_YOUTUBE_FAILURE', error });
+export const authYouTubeSuccess = json => ({ type: 'AUTHENTICATION_YOUTUBE_SUCCESS', json });
 export const loginAttempt = () => ({ type: 'AUTHENTICATION_LOGIN_ATTEMPT' });
 export const loginFailure = error => ({ type: 'AUTHENTICATION_LOGIN_FAILURE', error });
 export const loginSuccess = json => ({ type: 'AUTHENTICATION_LOGIN_SUCCESS', json });
@@ -88,6 +91,55 @@ export function createHash(email) {
 
     // turn off spinner
     return dispatch(decrementProgress());
+  };
+}
+
+// Auth User
+export function authYouTubeUser() {
+  alert('authYouTubeUser');
+  const data = 'testdata';
+  return async (dispatch) => {
+    dispatch(clearError());
+
+    // turn on spinner
+    dispatch(incrementProgress());
+
+    // register that a login attempt is being made
+    dispatch(authYouTubeAttempt());
+
+    // contact login API
+    await fetch(
+      // where to contact
+      '/api/authentication/ytauth',
+      // what to send
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      },
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return null;
+    })
+    .then((json) => {
+      if (json) {
+        dispatch(authYouTubeSuccess(json));
+      } else {
+        dispatch(authYouTubeFailure(new Error('YouTube authentication failed. Please try again.')));
+      }
+    })
+    .catch((error) => {
+      dispatch(authYouTubeFailure(new Error(error)));
+    });
+
+    // turn off spinner
+    dispatch(decrementProgress());
   };
 }
 
@@ -238,8 +290,8 @@ export function savePassword(data) {
           'Content-Type': 'application/json',
         },
         credentials: 'same-origin',
-        },
-      )
+      },
+    )
     .then((response) => {
       if (response.status === 200) {
         return response.json();

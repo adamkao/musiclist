@@ -5,6 +5,7 @@ const appConfig = require('../../config.js');
 const Discogs = require('disconnect').Client;
 const express = require('express');
 const mongoose = require('mongoose');
+const passport = require('passport');
 const User = require('../../models/user.js');
 
 const router = express.Router();
@@ -79,6 +80,23 @@ const saveArtists = async (artists) => {
     return true;
   }
 };
+
+router.post('/ytauth', async (req, res) => {
+  console.log('ytauth body ' + JSON.stringify(req.body));
+  passport.authorize('youtube-authz');
+});
+
+router.get('/redirect', async (req, res) => {
+  console.log('redirect body ' + JSON.stringify(req.body));
+});
+
+/*
+app.get('/redirect', passport.authenticate('youtube', { failureRedirect: '/login' }),
+function (req, res) {
+    console.log(req.user.accessToken);
+    res.redirect('http://localhost:3000/api/authentication/login2/?access_token=' + req.user.accessToken);
+});
+*/
 
 // POST to /add
 router.post('/add', async (req, res) => {
@@ -207,6 +225,7 @@ var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, callback, res, list, pageToken) {
+  /*
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
@@ -221,9 +240,11 @@ function authorize(credentials, callback, res, list, pageToken) {
       callback(oauth2Client, res, list, pageToken);
     }
   });
+  */
 }
 
 function authorizeVideos(credentials, callback, id, res, list, pageToken) {
+  /*
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
@@ -238,6 +259,7 @@ function authorizeVideos(credentials, callback, id, res, list, pageToken) {
       callback(oauth2Client, id, res, list, pageToken);
     }
   });
+  */
 }
 
 /**
@@ -249,6 +271,7 @@ function authorizeVideos(credentials, callback, id, res, list, pageToken) {
  *     client.
  */
 function getNewToken(oauth2Client, callback) {
+  /*
   var authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
@@ -270,6 +293,7 @@ function getNewToken(oauth2Client, callback) {
       callback(oauth2Client);
     });
   });
+  */
 }
 
 /**
@@ -278,6 +302,7 @@ function getNewToken(oauth2Client, callback) {
  * @param {Object} token The token to store to disk.
  */
 function storeToken(token) {
+  /*
   try {
     fs.mkdirSync(TOKEN_DIR);
   } catch (err) {
@@ -289,9 +314,11 @@ function storeToken(token) {
     if (err) throw err;
     console.log('Token stored to ' + TOKEN_PATH);
   });
+  */
 }
 
 function getPlaylists(auth, res, list, pageToken) {
+  /*
   const service = google.youtube('v3');
   service.playlists.list({
     auth: auth,
@@ -313,9 +340,11 @@ function getPlaylists(auth, res, list, pageToken) {
       res.json(newList.sort((a, b) => ((a.snippet.title < b.snippet.title) ? -1 : 1)));
     }
   });
+  */
 }
 
 function getVideos(auth, id, res, list, pageToken) {
+  /*
   const service = google.youtube('v3');
   service.playlistItems.list({
     auth: auth,
@@ -337,10 +366,12 @@ function getVideos(auth, id, res, list, pageToken) {
       res.json(newList);
     }
   });
+  */
 }
 
 // POST to /search
 router.post('/search', async (req, res) => {
+  /*
   fs.readFile('client_secret.json', function processClientSecrets(err, content) {
     if (err) {
       console.log('Error loading client secret file: ' + err);
@@ -349,10 +380,12 @@ router.post('/search', async (req, res) => {
     // Authorize a client with the loaded credentials, then call the YouTube API.
     authorize(JSON.parse(content), getPlaylists, res, [], null);
   });
+  */
 });
 
 // POST to /videos
 router.post('/videos', async (req, res) => {
+  /*
   fs.readFile('client_secret.json', function processClientSecrets(err, content) {
     if (err) {
       console.log('Error loading client secret file: ' + err);
@@ -362,6 +395,7 @@ router.post('/videos', async (req, res) => {
     // Authorize a client with the loaded credentials, then call the YouTube API.
     authorizeVideos(JSON.parse(content), getVideos, req.body.videoId, res, [], null);
   });
+  */
 });
 
 module.exports = router;

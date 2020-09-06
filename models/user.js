@@ -18,11 +18,7 @@ const User = new Schema({
     email: String,
     password: String,
   },
-  google: {
-    id: String,
-    token: String,
-    email: String,
-  },
+  googleid: String,
 });
 
 User.plugin(passportLocalMongoose);
